@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Quadro de 9 bits com paridade par (Método 1)."""
-from phy_sound_checker.bits import byte_to_bits
+from src import byte_to_bits
 
 
 def encode_frame(value: int) -> list[int]:
