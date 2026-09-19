@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    image: phy-sound-checker
+    volumes:
+      - .:/app          # edita no host, roda no container
+    tty: true
+    stdin_open: true
