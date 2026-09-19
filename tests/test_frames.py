@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
-from phy_sound_checker.crc8 import crc8
-from phy_sound_checker.parity import check_frame, encode_frame
+from crc8 import crc8
+from parity import check_frame, encode_frame
 
 
 def test_parity_examples_from_assignment():
