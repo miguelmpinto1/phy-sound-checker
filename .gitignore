@@ -1,0 +1,14 @@
+# Caches e compilados do Python
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Ambientes virtuais
+.venv/
+venv/
+
+# Configurações locais e IDEs
+.vscode/
+.idea/
+.env
+*.log
