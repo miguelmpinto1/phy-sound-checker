@@ -1,7 +1,11 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     image: phy-sound-checker
+    environment:
+      - PYTHONPATH=/app/src
     volumes:
       - .:/app          # edita no host, roda no container
     tty: true

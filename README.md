@@ -1,35 +1,51 @@
-# Physical Layer Sound Checker
+Índice
+======
 
-## Fundamentação Teórica do projeto:
-
-
-## Engenharia e Arquitetura das Soluções:
-
-1. [Método 1]
-* 
-
-2. [Método 2]
-* 
+* Objetivo
+* Tecnologias utilizadas
+* Primeiros passos
+* Guia para contribuição
 
 
-## Divisão de Tarefas da equipe:
+Objetivo
+========
 
-* Iago:
-* Joao:
-* Marcos: 
-* Miguel: 
-* Yuri: 
+[Texto descritivo do objetivo do projeto]
 
-## Desafios, Problemas e Soluções
+Funcionalidades
+---------------
 
-## Declaração do Uso de Inteligência Artificial
-
-## Conclusão
+1. [Funcionalidade 1]
+* [Subitem 1]
 
 
-## Instalação e contribuição
+2. [Funcionalidade 2]
+* [Subitem 1]
 
-### Passos rápidos
+
+Tecnologias utilizadas
+======================
+
+O projeto foi desenvolvido utilizando as seguintes tecnologias:
+
+* Backend: [Tecnologia/Framework]
+* Frontend: [Tecnologia/Framework]
+* Banco de Dados: [Banco de Dados]
+
+
+Primeiros passos
+================
+
+Pré-requisitos:
+---------------
+
+* [Pré-requisito 1]
+* [Pré-requisito 2]
+
+> Observação: [Observação relevante sobre o ambiente ou configuração]
+
+Passos rápidos
+--------------
 
 * Clonar o repositório
 * git clone
@@ -39,8 +55,10 @@
 * Acessar a aplicação
 * [URL ou porta de acesso]
 
-> Observação: [Outra observação relevante, caso necessário]
+> Observação: [Outra observação relevante, se necessário]
 
-### Guia para contribuição
+
+Guia para contribuição
+======================
 
 Verificar o arquivo CONTRIBUTING para mais informações.
