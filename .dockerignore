@@ -1,0 +1,28 @@
+# Caches do Python e testes (recursivo em todas as subpastas)
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+**/.pytest_cache
+
+# Git
+.git
+.gitignore
+
+# Pastas não necessárias para o container de produção
+docs/
+tests/
+tools/
+
+# Documentação e ficheiros de suporte
+*.md
+LICENSE
+CONTRIBUTING
+
+# Ambientes virtuais, IDEs e variáveis locais
+.venv/
+venv/
+.vscode/
+.idea/
+.env
+*.log
