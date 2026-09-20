@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Módulo responsável por validar a integridade dos quadros recebidos no Método 2."""
 
-from calculate_crc8 import crc8
+from crc8 import crc8
 
 def verify_frame_method2(frame: dict) -> bool:
     """Valida se o quadro recebido está íntegro ou corrompido por ruído.

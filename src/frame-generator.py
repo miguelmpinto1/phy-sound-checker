@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Módulo responsável por estruturar e gerar o quadro de transmissão do Método 2."""
 
-from calculate_crc8 import crc8
+from crc8 import crc8
 
 def generate_frame_method2(payload: bytes, data_size: int) -> dict:
     """Gera e estrutura o quadro de comunicação para o Método 2 da camada física.
