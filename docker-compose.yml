@@ -7,6 +7,6 @@ services:
     environment:
       - PYTHONPATH=/app/src
     volumes:
-      - .:/app          # edita no host, roda no container
+      - .:/app
     tty: true
     stdin_open: true
