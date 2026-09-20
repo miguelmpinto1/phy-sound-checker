@@ -10,8 +10,8 @@ import transmitter
 
 # Módulos oficiais do projeto
 from bits import bits_to_bytes, byte_to_bits, bytes_to_bits
-from frame_generator import generate_frame_method2
-from frame_verifier import verify_frame_method2
+from frame import generate_frame_method2
+from frame import verify_frame_method2
 
 
 def frame_dict_to_bits(frame: dict) -> list[int]:
