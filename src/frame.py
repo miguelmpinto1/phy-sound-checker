@@ -26,7 +26,6 @@ def generate_frame_method2(payload: bytes, data_size: int) -> dict:
     """Gera e estrutura o quadro de comunicação para o Método 2 da camada física.
     O quadro contém preâmbulo [101], tamanho, dados úteis, CRC-8 e delimitador final [101].
     """
-    # O cálculo do CRC protege obrigatoriamente a junção do Tamanho com os Dados[cite: 1]
     data_for_crc = bytes([data_size]) + payload
     crc_code = crc8(data_for_crc)
 
@@ -43,17 +42,15 @@ def generate_frame_method2(payload: bytes, data_size: int) -> dict:
 def verify_frame_method2(frame: dict) -> bool:
     """Valida se o quadro recebido está íntegro ou corrompido por ruído.
 
-    Recalcula o CRC-8 sobre os campos de tamanho e dados, comparando com o CRC anexado[cite: 1].
+    Recalcula o CRC-8 sobre os campos de tamanho e dados, comparando com o CRC anexado.
     """
     size = frame["size"]
     payload = frame["payload"]
     received_crc = frame["crc"]
 
-    # Recalcula o CRC usando os mesmos campos protegidos no envio[cite: 1]
     data_for_crc = bytes([size]) + payload
     calculated_crc = crc8(data_for_crc)
 
-    # Compara o resultado calculado com o CRC recebido (Sucesso se True)[cite: 1]
     return calculated_crc == received_crc
 
 
@@ -68,8 +65,8 @@ def decode(bits: list[int]) -> DecodeResult:
     # Lê o campo TAMANHO (ocupa os bits 3..10, total de 8 bits)
     size = bits_to_byte(bits[3:11])
     
-    # Restringe estritamente para pacotes de até 8 bits de dados
-    if size == 0 or size > MAX_PAYLOAD_BITS:
+    # Restringe estritamente para pacotes de até 8 bits de dados e múltiplos de 8 bits
+    if size == 0 or size > MAX_PAYLOAD_BITS or size % 8 != 0:
         return DecodeResult(False, reason="tamanho de dados inválido ou superior a 8 bits")
 
     # Calcula o tamanho total esperado do quadro baseado nos bits de payload
@@ -80,8 +77,11 @@ def decode(bits: list[int]) -> DecodeResult:
     data_end = 11 + size
     payload_bits_list = bits[11:data_end]
     
-    # Converte os bits de dados obtidos para bytes
-    payload = bits_to_bytes(payload_bits_list)
+    # Proteção contra ruídos que corrompem a contagem de bits
+    try:
+        payload = bits_to_bytes(payload_bits_list)
+    except ValueError:
+        return DecodeResult(False, reason="bits do payload não formam bytes inteiros")
     
     # Extrai o byte de CRC-8 logo após o payload
     crc_rx = bits_to_byte(bits[data_end:data_end + 8])
