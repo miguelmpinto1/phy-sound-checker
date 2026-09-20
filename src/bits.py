@@ -21,3 +21,7 @@ def bits_to_bytes(bits: list[int]) -> bytes:
     if len(bits) % 8 != 0:
         raise ValueError("quantidade de bits deve ser múltiplo de 8")
     return bytes(bits_to_byte(bits[i:i + 8]) for i in range(0, len(bits), 8))
+
+def text_to_bits(text: str) -> str:
+    """Converte uma string de texto em uma sequência de bits (ASCII de 8 bits)."""
+    return "".join(format(ord(char), "08b") for char in text)
