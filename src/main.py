@@ -1,22 +1,19 @@
 # SPDX-License-Identifier: MIT
 """CLI da camada física por áudio: emissor/receptor didático dos métodos 1 e 2.
 
-Fluxo interativo (padrão):
+Ponto de entrada único (fluxo interativo):
     python src/main.py
 
-Modo contínuo/legado, com faixa audível ou quase-ultrassônica:
-    python src/main.py send "mensagem" [--mode audible|ultrasonic]
-    python src/main.py listen [--mode audible|ultrasonic]
+O assistente pergunta, nesta ordem:
+    1) papel   -> Emissor ou Receptor;
+    2) método  -> Método 1 (batidas + paridade) ou Método 2 (M-FSK + CRC-8);
+    3) verboso -> mostrar (ou não) o detalhamento do processamento.
 """
 
-import argparse
 import os
-import sys
 import tempfile
-import time
 
 import audio_io
-import frame
 import method1
 import method2
 
@@ -130,129 +127,15 @@ def run_wizard() -> None:
         run_receiver(method, verbose)
 
 
-# --------------------------------------------------------------------------- #
-# Modo contínuo (legado): envia/escuta quadros de 1 byte em fluxo de áudio      #
-# --------------------------------------------------------------------------- #
-
-def handle_send(args: argparse.Namespace) -> None:
-    """Envia a mensagem caractere por caractere em fluxo contínuo de áudio."""
-    import audio_config as cfg
-    import transmitter
-
-    cfg.set_mode(args.mode)
-    payload = args.message.encode("utf-8")
-
-    print(f"[+] Iniciando envio da mensagem: {args.message!r} "
-          f"({len(payload)} caractere(s), modo {args.mode})")
-
-    for i, char_byte in enumerate(payload):
-        packet = bytes([char_byte])
-        bit_stream = frame.encode(packet)
-
-        if args.verbose:
-            crc_bits = bit_stream[19:27]
-            crc_value = int("".join(str(b) for b in crc_bits), 2)
-            print(f"[+] quadro {i + 1}: dados=0x{char_byte:02X} crc=0x{crc_value:02X} "
-                  f"total={len(bit_stream)} bits")
-
-        print(f"[+] Enviando pacote {i + 1}/{len(payload)} ({len(bit_stream)} bits): {bit_stream}")
-        transmitter.transmit_bits(bit_stream)
-        time.sleep(0.1)
-
-    print("[✔] Transmissão de todos os pacotes concluída!")
-
-
-def handle_listen(args: argparse.Namespace) -> None:
-    """Escuta o fluxo contínuo e decodifica cada quadro reconhecido pelo delimitador."""
-    import audio_config as cfg
-    import receiver
-
-    cfg.set_mode(args.mode)
-    threshold = getattr(cfg, "MAGNITUDE_THRESHOLD", 1.0)
-    print(f"[*] Limiar de Magnitude Ativo: {threshold}")
-
-    bit_buffer: list[int] = []
-
-    def on_bits_received(new_bits: list[int]) -> None:
-        nonlocal bit_buffer
-        bit_buffer.extend(new_bits)
-
-        if args.verbose:
-            print(f"[~] bloco recebido: {''.join(str(b) for b in new_bits)} "
-                  f"({sum(new_bits)} tom(s) ativo(s))")
-
-        if len(bit_buffer) > 1000:
-            bit_buffer = bit_buffer[-500:]
-
-        i = 0
-        while i <= len(bit_buffer) - 3:
-            if bit_buffer[i:i + 3] == [1, 0, 1]:
-                result = frame.decode(bit_buffer[i:])
-
-                if result.ok:
-                    try:
-                        char_str = result.payload.decode("utf-8")
-                    except UnicodeDecodeError:
-                        char_str = str(result.payload)
-
-                    print("\n" + "=" * 50)
-                    print("[✔] SUCESSO! Pacote decodificado via frame.decode()!")
-                    print(f"[➔] Caractere/Payload: {char_str}")
-                    print("=" * 50 + "\n")
-
-                    consumed = frame.OVERHEAD_BITS + len(result.payload) * 8
-                    bit_buffer = bit_buffer[i + consumed:]
-                    i = 0
-                    continue
-            i += 1
-
-    try:
-        receiver.listen_continuous_stream(on_bits_received)
-    except KeyboardInterrupt:
-        print("\n\n[!] Escuta encerrada pelo usuário.")
-        sys.exit(0)
-
-
-def build_parser() -> argparse.ArgumentParser:
-    """Argumentos para o modo legado; sem subcomando o CLI abre o fluxo interativo."""
-    parser = argparse.ArgumentParser(description="Camada Física por Áudio")
-    subparsers = parser.add_subparsers(dest="command")
-
-    send_parser = subparsers.add_parser("send",
-                                        help="envia a mensagem em fluxo contínuo (modo legado)")
-    send_parser.add_argument("message", type=str)
-    send_parser.add_argument("--mode", choices=["audible", "ultrasonic"], default="audible")
-    send_parser.add_argument("-v", "--verbose", action="store_true",
-                             help="mostra o detalhamento dos quadros enviados")
-
-    listen_parser = subparsers.add_parser("listen",
-                                          help="escuta o fluxo contínuo (modo legado)")
-    listen_parser.add_argument("--mode", choices=["audible", "ultrasonic"], default="audible")
-    listen_parser.add_argument("-v", "--verbose", action="store_true",
-                               help="mostra o detalhamento do processamento recebido")
-    return parser
-
-
 def main() -> None:
-    parser = build_parser()
-    args = parser.parse_args()
-
-    if args.command == "send":
-        handle_send(args)
-        return
-    if args.command == "listen":
-        handle_listen(args)
-        return
-
+    """Executa o assistente interativo, único modo de operação da CLI."""
     try:
         run_wizard()
     except KeyboardInterrupt:
         print("\n[i] execução interrompida pelo usuário.")
     except EOFError:
         print("\n[i] entrada padrão encerrada (EOF).")
-        print("    rode em um terminal interativo ou use os modos diretos:")
-        print("      python src/main.py send \"mensagem\"")
-        print("      python src/main.py listen")
+        print("    rode a CLI em um terminal interativo: python src/main.py")
 
 
 if __name__ == "__main__":
