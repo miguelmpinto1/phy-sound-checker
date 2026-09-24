@@ -8,6 +8,9 @@ O assistente pergunta, nesta ordem:
     1) papel   -> Emissor ou Receptor;
     2) método  -> Método 1 (batidas + paridade) ou Método 2 (M-FSK + CRC-8);
     3) verboso -> mostrar (ou não) o detalhamento do processamento.
+
+No papel de Receptor, depois de informar a duração, um espectrograma ao vivo é exibido
+no terminal até o fim da gravação.
 """
 
 import os
@@ -16,6 +19,7 @@ import tempfile
 import audio_io
 import method1
 import method2
+import spectrogram
 
 METHOD_1 = "Método 1 (batidas + paridade)"
 METHOD_2 = "Método 2 (M-FSK + CRC-8)"
@@ -91,7 +95,8 @@ def run_receiver(method: str, verbose: bool) -> None:
         print("[receptor] duração inválida.")
         return
 
-    signal = audio_io.record(duration)
+    # espectrograma ao vivo: roda no terminal durante toda a gravação
+    signal = audio_io.record(duration, on_block=spectrogram.LiveSpectrogram())
 
     if method == METHOD_1:
         results = method1.receive(signal, verbose=verbose)

@@ -4,6 +4,7 @@
 import numpy as np
 
 SAMPLE_RATE = 44100
+BLOCK = SAMPLE_RATE // 10   # amostras lidas por vez na gravação (0,1 s)
 
 try:
     import sounddevice as sd
@@ -30,16 +31,30 @@ def play(signal: np.ndarray, sample_rate: int = SAMPLE_RATE) -> None:
     sd.wait()
 
 
-def record(duration: float, sample_rate: int = SAMPLE_RATE) -> np.ndarray:
-    """Grava áudio do microfone por 'duration' segundos."""
+def record(duration: float, sample_rate: int = SAMPLE_RATE, on_block=None) -> np.ndarray:
+    """Grava áudio do microfone por 'duration' segundos.
+
+    A gravação é feita em blocos; se 'on_block' for informado, ele é chamado a cada bloco
+    como on_block(bloco, segundos_decorridos) — é assim que o espectrograma ao vivo roda.
+    """
     _require_audio()
     print(f"[áudio] gravando por {duration:.1f}s...")
-    rec = sd.rec(int(duration * sample_rate),
-                 samplerate=sample_rate,
-                 channels=1, dtype="float32")
-    sd.wait()
+
+    total = int(duration * sample_rate)
+    chunks = []
+    done = 0
+    with sd.InputStream(samplerate=sample_rate, channels=1, dtype="float32",
+                        blocksize=BLOCK) as stream:
+        while done < total:
+            data, _ = stream.read(min(BLOCK, total - done))
+            block = data[:, 0].copy()
+            chunks.append(block)
+            done += len(block)
+            if on_block is not None:
+                on_block(block, done / sample_rate)
+
     print("[áudio] gravação concluída.")
-    return rec.flatten()
+    return np.concatenate(chunks) if chunks else np.zeros(0, dtype=np.float32)
 
 
 def save_wav(signal: np.ndarray, path: str, sample_rate: int = SAMPLE_RATE) -> str:
