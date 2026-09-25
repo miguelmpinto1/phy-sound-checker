@@ -1,5 +1,4 @@
-Índice
-======
+# Índice
 
 - Padrões de Branch
 - Mensagens de Commit
@@ -8,8 +7,7 @@
 - Workflow
 
 
-Padrões de Branch
-=================
+## Padrões de Branch
 
 O padrão de branch a ser seguido é lowercase-kebab-case.
 
@@ -22,8 +20,7 @@ Teremos dois padrões de branches, baseado na estratégia de branches Git Flow:
 - hotfix/: para correções urgentes em produção (ex: hotfix/fix-login-bug).
 
 
-Mensagens de Commit
-===================
+## Mensagens de Commit
 
 Formato: <tipo>: <descrição>
 
@@ -46,8 +43,7 @@ Exemplo:
 feat!: corrigir erro de validação
 
 
-Versionamento Semântico
-=======================
+## Versionamento Semântico
 
 O projeto seguirá o padrão de Versionamento Semântico (SemVer).
 
@@ -64,8 +60,7 @@ Exemplo:
 1.0.0 → 2.0.0
 
 
-Padrão de Nomeação
-==================
+## Padrão de Nomeação
 
 Para padronizar o projeto, favor utilizarem somente lower-kebab-case e camelCase
 tanto no frontend quanto no backend.
@@ -87,8 +82,7 @@ Usem PascalCase apenas em nomes de classes.
 Para a linguagem do projeto, sugiro utilizarem o inglês.
 
 
-Workflow
-========
+## Workflow
 
 - Verificar as issues disponíveis no Project.
 - Criar sua branch a partir da develop com o nome da issue atribuída a você.
