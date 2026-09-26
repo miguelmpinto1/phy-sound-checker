@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 FROM python:3.12-slim-bookworm
 
 # libportaudio2 é exigida pelo sounddevice (áudio vem depois)

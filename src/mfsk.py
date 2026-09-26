@@ -204,4 +204,4 @@ def demodulate(signal: np.ndarray, m: int = 4, sample_rate: int = SAMPLE_RATE,
         if not confident:
             continue
         bits.extend(symbols_to_bits([symbol], m))
-    return bits
+    return bits 

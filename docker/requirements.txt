@@ -1,4 +1,6 @@
+# Únicas dependências de áudio/sinal (DSP): não adicionar scipy/matplotlib.
 numpy
-scipy
 sounddevice
+
+# Dependência de desenvolvimento: suíte de testes em tests/.
 pytest
