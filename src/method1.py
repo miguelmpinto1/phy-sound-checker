@@ -20,8 +20,8 @@ import parity
 # --------------------------------------------------------------------------- #
 SAMPLE_RATE = 44100     # taxa de amostragem do áudio gerado/capturado (Hz)
 BEAT_DURATION = 0.05    # duração de uma batida sintética (s): clique de 50 ms
-BEAT_GAP = 0.15         # intervalo entre batidas do mesmo bit (s): separa os 1s dos 0s
-BIT_GAP = 0.35          # intervalo de silêncio entre bits (s): > BEAT_GAP p/ não fundir bits
+BEAT_GAP = 0.30         # intervalo entre batidas do mesmo bit (s): separa os 1s dos 0s
+BIT_GAP = 0.50          # intervalo de silêncio entre bits (s): > BEAT_GAP p/ não fundir bits
 THRESHOLD = 0.1         # limiar de amplitude (0..1) para detectar batida: suba se houver ruído
 REFRACTORY = 0.08       # tempo mínimo entre picos (s): evita contar a mesma batida duas vezes
 
