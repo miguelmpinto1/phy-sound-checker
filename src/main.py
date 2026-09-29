@@ -83,20 +83,14 @@ def run_emitter(method: str, verbose: bool) -> None:
 
 
 def run_receiver(method: str, verbose: bool) -> None:
-    """Grava o áudio do microfone e tenta decodificar o quadro transmitido."""
+    """Grava o áudio do microfone (até o usuário interromper) e tenta decodificar o quadro."""
     if not audio_io.AUDIO_AVAILABLE:
         print(f"[receptor] entrada de áudio indisponível ({audio_io.AUDIO_ERROR}).")
         print("[receptor] instale o PortAudio (ex.: libportaudio2) para usar o microfone.")
         return
 
-    try:
-        duration = float(input("duração da gravação (s): ").strip())
-    except ValueError:
-        print("[receptor] duração inválida.")
-        return
-
     # espectrograma ao vivo: roda no terminal durante toda a gravação
-    signal = audio_io.record(duration, on_block=spectrogram.LiveSpectrogram())
+    signal = audio_io.record_until_cancelled(on_block=spectrogram.LiveSpectrogram())
 
     if method == METHOD_1:
         results = method1.receive(signal, verbose=verbose)
