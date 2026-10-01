@@ -71,3 +71,29 @@ def save_wav(signal: np.ndarray, path: str, sample_rate: int = SAMPLE_RATE) -> s
         wav.writeframes(pcm)
 
     return path
+
+def record_until_cancelled(sample_rate: int = SAMPLE_RATE, on_block=None) -> np.ndarray:
+    """Grava continuamente até o usuário interromper com Ctrl+C.
+
+    Devolve tudo que foi capturado até o momento da interrupção — mesmo padrão de
+    blocos e 'on_block' de record(), só sem duração fixa.
+    """
+    _require_audio()
+    print("[áudio] gravando... pressione Ctrl+C para parar e processar.")
+
+    chunks = []
+    done = 0
+    try:
+        with sd.InputStream(samplerate=sample_rate, channels=1, dtype="float32",
+                            blocksize=BLOCK) as stream:
+            while True:
+                data, _ = stream.read(BLOCK)
+                block = data[:, 0].copy()
+                chunks.append(block)
+                done += len(block)
+                if on_block is not None:
+                    on_block(block, done / sample_rate)
+    except KeyboardInterrupt:
+        print("\n[áudio] gravação interrompida pelo usuário.")
+
+    return np.concatenate(chunks) if chunks else np.zeros(0, dtype=np.float32)
