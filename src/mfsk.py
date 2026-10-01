@@ -9,7 +9,7 @@ SAMPLE_RATE = 44100
 SYMBOL_DURATION = 0.02
 SYMBOL_GAP = 0.002
 BASE_FREQ = 1000.0
-FREQ_STEP = 500.0
+FREQ_STEP = 250.0
 FADE_TIME = 0.005
 
 # --------------------------------------------------------------------------- #
