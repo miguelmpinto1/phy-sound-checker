@@ -73,20 +73,6 @@ Para o **enquadramento** dos dados utilizamos o modelo: [Início (1,0,1)] + [Tam
 O delimitador [1,0,1] marca início e fim do quadro dentro do fluxo de bits, essencial para definir quando o receptor deve receber a mensagem. 
 O campo TAMANHO guarda o número de bytes (1 a 255) e o erro do CRC-8.
 
-A **modulação** implementada foi a M-FSK (Multiple Frequency-Shift Keying), utilizando 16 frequências, 4 bits por símbolo (aumentando a cada 500Hz de 1000 a 8500), escolhida pela maior eficiência e tolerância à ruídos porém, que demanda mais banda larga.
-Enquanto para o processo de recepção da transmissão (demodulação) foi implementada a transformada rápida de Fourier (FFT), onde o algoritmo detecta e analisa o primeiro pico de sinal e a partir dele lê os outros, identificando a maior energia e consequentemente o valor dos bits transmitidos (0 ou 1).
-Além das escolhas de modulação, já visando diminuição de ruídos, aplicamos também mais tecnologias com a mesma finalidade:
-
-  Janelamento -> Como o FFT deve identificar o pico de energia, o janelamento diminui as primeiras e últimas ondas de cada sinal, evitando que ruídos pelo corte do início e final de transmissão sejam considerados.
-  
-  AGC -> Controle de ganho, amplificando o sinal caso esteja baixo e não seja perceptível ou reduzindo caso esteja alto e esteja causando distorção.
-  
-  Piso de ruído -> Analisa ruídos e traça um mínimo para ignorá-los.
-  
-  Detecção de início por energia espectral -> Identifica o início da passagem do dado, ignorando ruídos menores antes e depois da mensagem.
-  
-  Decisão de símbolo por confiança -> Compara o pico identificado com o segundo colocado e com o piso de ruído estimado para sinalização de possíveis erros.
-
 **CRC-8**
 
 O CRC-8 (Cyclic Redundancy Check) é um método utilizado para detectar erros que podem ocorrer durante a transmissão dos dados. Ele gera um valor de 8 bits a partir dos dados do quadro, que é transmitido junto com a mensagem.
@@ -119,6 +105,20 @@ O cálculo é realizado através de divisões sucessivas utilizando XOR e o poli
 Assim, o quadro de dados fica:
 
 [00001000] + [01000001] + [01101000]
+
+A **modulação** implementada foi a M-FSK (Multiple Frequency-Shift Keying), utilizando 16 frequências, 4 bits por símbolo (aumentando a cada 500Hz de 1000 a 8500), escolhida pela maior eficiência e tolerância à ruídos porém, que demanda mais banda larga.
+Enquanto para o processo de recepção da transmissão (demodulação) foi implementada a transformada rápida de Fourier (FFT), onde o algoritmo detecta e analisa o primeiro pico de sinal e a partir dele lê os outros, identificando a maior energia e consequentemente o valor dos bits transmitidos (0 ou 1).
+Além das escolhas de modulação, já visando diminuição de ruídos, aplicamos também mais tecnologias com a mesma finalidade:
+
+  Janelamento -> Como o FFT deve identificar o pico de energia, o janelamento diminui as primeiras e últimas ondas de cada sinal, evitando que ruídos pelo corte do início e final de transmissão sejam considerados.
+  
+  AGC -> Controle de ganho, amplificando o sinal caso esteja baixo e não seja perceptível ou reduzindo caso esteja alto e esteja causando distorção.
+  
+  Piso de ruído -> Analisa ruídos e traça um mínimo para ignorá-los.
+  
+  Detecção de início por energia espectral -> Identifica o início da passagem do dado, ignorando ruídos menores antes e depois da mensagem.
+  
+  Decisão de símbolo por confiança -> Compara o pico identificado com o segundo colocado e com o piso de ruído estimado para sinalização de possíveis erros.
 
 **Taxas de transmissão:**
 
@@ -181,3 +181,11 @@ Verifique o arquivo CONTRIBUTING para mais informações.
 Este projeto é distribuído sob a **MIT License**.
 
 Verifique o arquivo LICENSE para mais informações.
+
+<br><br>
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=qRYjbNFSWIo"
+    target="_blank">
+  <img src="https://img.youtube.com/vi/qRYjbNFSWIo/hqdefault.jpg" alt="Vídeo de Demonstração" width="560">
+  </a>
+</div>
