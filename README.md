@@ -39,6 +39,32 @@ Como toda transmissão de dados está sujeita a erros pela conversão de meios, 
 
 ### **Método 1**
 
+O Método 1 define a comunicação de dados utilizando som, através de batidas, com detecção de erros baseada em paridade.
+
+Cada quadro possui 9 bits, sendo 8 bits de dados e 1 bit de paridade: [Dados] + [Paridade]. 
+Os 8 bits de dados podem representar, por exemplo, um caractere da tabela ASCII.
+
+**Paridade**
+
+O bit de paridade é um metódo de detecção de erros cujo é definido de acordo com a quantidade de bits 1 presentes nos 8 bits de dados:
+
+Se a quantidade de bits 1 for par, o bit de paridade será 0.
+Se a quantidade de bits 1 for ímpar, o bit de paridade será 1.
+
+Dessa forma, o bit de paridade permite ao receptor verificar se houve alteração nos dados durante a transmissão.
+
+Entrando na parte da comunicação via som, cada bit é representado por uma certa sequência de batidas e silencio, sendo:
+
+0: silêncio + batida + silêncio
+1: silêncio + batida + batida + silêncio
+
+No receptor, o quadro recebido é analisado considerando inicialmente os 8 bits de dados. Em seguida, o receptor calcula a paridade desses bits e compara o resultado com o bit de paridade recebido. Caso a paridade calculada seja igual a paridade recebida, o quadro é considerado válido, caso contrário, o receptor descarta o quadro por considerar que houve alguma alteração durante o pacote transmitido.
+
+**Taxas de Transmissão**
+
+A taxa de transmissão para o método 1 depende logicamente da quantidade de bits 1 ou 0, visto que a execução de um bit 0 é mais rápida doque o bit 1, portanto, considerando a média dos testes
+a velocidade prática alcançada foi de 1,4 bps.
+
 ---
 ### **Método 2**
 Para o **enquadramento** dos dados utilizamos o modelo: [Início (1,0,1)] + [Tamanho do Dado] + [Dado] + [Erro (CRC-8)] + [Fim (1,0,1)].
