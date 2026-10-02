@@ -39,6 +39,33 @@ Como toda transmissão de dados está sujeita a erros pela conversão de meios, 
 
 ### **Método 1**
 
+O Método 1 define a comunicação de dados utilizando som, através de batidas, com detecção de erros baseada em paridade.
+
+Cada quadro possui 9 bits, sendo 8 bits de dados e 1 bit de paridade: [Dados] + [Paridade]. 
+Os 8 bits de dados podem representar, por exemplo, um caractere da tabela ASCII.
+
+**Paridade**
+
+O bit de paridade é um metódo de detecção de erros cujo é definido de acordo com a quantidade de bits 1 presentes nos 8 bits de dados:
+
+Se a quantidade de bits 1 for par, o bit de paridade será 0.
+Se a quantidade de bits 1 for ímpar, o bit de paridade será 1.
+
+Dessa forma, o bit de paridade permite ao receptor verificar se houve alteração nos dados durante a transmissão.
+
+Entrando na parte da comunicação via som, cada bit é representado por uma certa sequência de batidas e silencio, sendo:
+
+0: silêncio + batida + silêncio
+
+1: silêncio + batida + batida + silêncio
+
+No receptor, o quadro recebido é analisado considerando inicialmente os 8 bits de dados. Em seguida, o receptor calcula a paridade desses bits e compara o resultado com o bit de paridade recebido. Caso a paridade calculada seja igual a paridade recebida, o quadro é considerado válido, caso contrário, o receptor descarta o quadro por considerar que houve alguma alteração durante o pacote transmitido.
+
+**Taxas de Transmissão**
+
+A taxa de transmissão para o método 1 depende logicamente da quantidade de bits 1 ou 0, visto que a execução de um bit 0 é mais rápida doque o bit 1, portanto, considerando a média dos testes
+a velocidade prática alcançada foi de 1,4 bps.
+
 ---
 ### **Método 2**
 Para o **enquadramento** dos dados utilizamos o modelo: [Início (1,0,1)] + [Tamanho do Dado] + [Dado] + [Erro (CRC-8)] + [Fim (1,0,1)].
@@ -59,6 +86,39 @@ Além das escolhas de modulação, já visando diminuição de ruídos, aplicamo
   Detecção de início por energia espectral -> Identifica o início da passagem do dado, ignorando ruídos menores antes e depois da mensagem.
   
   Decisão de símbolo por confiança -> Compara o pico identificado com o segundo colocado e com o piso de ruído estimado para sinalização de possíveis erros.
+
+**CRC-8**
+
+O CRC-8 (Cyclic Redundancy Check) é um método utilizado para detectar erros que podem ocorrer durante a transmissão dos dados. Ele gera um valor de 8 bits a partir dos dados do quadro, que é transmitido junto com a mensagem.
+
+No receptor, o mesmo cálculo é realizado novamente. O resultado é então comparado com o CRC recebido. Dessa forma, é possível verificar se os dados foram alterados durante a transmissão.
+
+Emissor:
+O emissor junta o campo de Tamanho com os Dados, calcula o CRC-8 sobre esses bits e adiciona o resultado ao quadro. Em seguida, o quadro completo é transmitido por som.
+
+Receptor:
+O receptor decodifica o quadro recebido e calcula novamente o CRC-8 utilizando os campos Tamanho + Dados. Depois, compara o resultado calculado com o CRC recebido.
+
+Se os dois CRCs forem iguais, o quadro é considerado íntegro e os dados são aceitos.
+
+Se forem diferentes, significa que algum bit pode ter sido alterado durante a transmissão. Nesse caso, o quadro é descartado.
+
+Exemplo
+Para transmitir a letra A em ASCII:
+
+Tamanho: 00001000
+
+Dado (A): 01000001
+
+Para o cálculo do CRC-8, é utilizado um padding de 8 zeros após os dados. Esse padding é utilizado somente durante o cálculo e não faz parte do quadro transmitido.
+
+O cálculo é realizado através de divisões sucessivas utilizando XOR e o polinômio 0x07. O resultado final para esse exemplo é:
+
+01101000
+
+Assim, o quadro de dados fica:
+
+[00001000] + [01000001] + [01101000]
 
 **Taxas de transmissão:**
 
