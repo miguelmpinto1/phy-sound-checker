@@ -46,7 +46,7 @@ Para o **enquadramento** dos dados utilizamos o modelo: [Início (1,0,1)] + [Tam
 O delimitador [1,0,1] marca início e fim do quadro dentro do fluxo de bits, essencial para definir quando o receptor deve receber a mensagem. 
 O campo TAMANHO guarda o número de bytes (1 a 255) e o erro do CRC-8.
 
-A **modulação** implementada foi a M-FSK (Multiple Frequency-Shift Keying), utilizando 16 frequências, 4 bits por símbolo (em 1000, 1500, 2000 e 2500 Hz), escolhida pela maior eficiência e tolerância à ruídos porém, que demanda mais banda larga.
+A **modulação** implementada foi a M-FSK (Multiple Frequency-Shift Keying), utilizando 16 frequências, 4 bits por símbolo (aumentando a cada 500Hz de 1000 a 8500), escolhida pela maior eficiência e tolerância à ruídos porém, que demanda mais banda larga.
 Enquanto para o processo de recepção da transmissão (demodulação) foi implementada a transformada rápida de Fourier (FFT), onde o algoritmo detecta e analisa o primeiro pico de sinal e a partir dele lê os outros, identificando a maior energia e consequentemente o valor dos bits transmitidos (0 ou 1).
 Além das escolhas de modulação, já visando diminuição de ruídos, aplicamos também mais tecnologias com a mesma finalidade:
 
@@ -61,9 +61,21 @@ Além das escolhas de modulação, já visando diminuição de ruídos, aplicamo
   Decisão de símbolo por confiança -> Compara o pico identificado com o segundo colocado e com o piso de ruído estimado para sinalização de possíveis erros.
 
 **Taxas de transmissão:**
-- A taxa teórica é adquirida por (theoretical_rate()): k / (SYMBOL_DURATION + SYMBOL_GAP) = 2 / 0,022s ≈ **90,9 bps**, ignorando qualquer overhead.
-- A taxa prática leva em consideração o enquadramento, incluindo o overhead dos 0,3s de silêncio no início e final do quadro (SILENCE_LEAD), que impacta principalmente em mensagens curtas. Por exemplo, para transmitir a mensagem "A" (1 byte), o quadro completo tem 30 bits = 15 símbolos ≈ 0,33s de dados, mas o tempo total da transmissão (incluindo o overhead de 0,6s) é de aproximadamente 0,93s, ou seja, a taxa prática fica abaixo da teórica para mensagens curtas e se aproxima dela conforme a mensagem aumenta.
-  
+
+A configuração padrão do Método 2 usa M = 16 (4 bits por símbolo) e duração de símbolo de 4 ms.
+Assim:
+
+- A taxa teórica é adquirida por (theoretical_rate()): k / (SYMBOL_DURATION + SYMBOL_GAP) = 4 / 0,006s ≈ **666,7 bps**, ignorando qualquer overhead.
+- A taxa prática leva em consideração o enquadramento, incluindo o overhead dos 0,3s de silêncio no início e final do quadro (SILENCE_LEAD), que impacta principalmente em mensagens curtas. Por exemplo, para transmitir a mensagem "Ola mundo" (9 bytes), o quadro completo tem 94 bits = 24 símbolos ≈ 0,144s de dados, mas o tempo total da transmissão (incluindo o overhead de 0,6s) é de aproximadamente 0,744s = **126 bps**, ou seja, a taxa prática fica abaixo da teórica para mensagens curtas e se aproxima dela conforme a mensagem aumenta.
+
+| Cenário | M máximo | bits/símbolo | Frequência máxima | bps teórico |
+|---|---|---|---|---|
+| Faixa introdutória | 4 | 2 | 2500 Hz | 333,3 |
+| Padrão adotado (margem confortável p/ hardware de consumo) | 16 | 4 | 8500 Hz | 666,7 |
+| Limite de áudio/frequência | 32 | 5 | 16.500 Hz | 833,3 |
+
+Alterando o máximo o programa para a obtenção de maior taxa de bps, fizemos M = 4.194.304 e SYMBOL_DURATION = 0,001s, retornando ≈ 6281,7 bps, porém, esta só representa a taxa teórica e sem segurança de dados, se é instituído um limite do próprio meio na obtenção de mais taxas de frequência.
+
 ## Divisão de Tarefas da equipe:
 
 * Iago de Souza Hernandes: Pesquisa, planejamento, vídeo, documentação e software (método 1 e 2)
