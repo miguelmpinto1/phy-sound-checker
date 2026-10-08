@@ -11,7 +11,7 @@ import frame
 import mfsk
 from mfsk import SAMPLE_RATE, SYMBOL_DURATION
 
-M = 4                       # 16 frequências -> 4 bits por símbolo
+M = 16                       # 16 frequências -> 4 bits por símbolo
 SYMBOL_GAP = mfsk.SYMBOL_GAP
 SILENCE_LEAD = 0.3          # silêncio antes/depois do quadro (sincronismo)
 
