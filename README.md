@@ -159,6 +159,7 @@ O uso de ferramentas de Inteligência Artificial Generativa foi autorizado pela 
 ## Conclusão
 
 Enfrentamos diversos problemas durante a implementação do projeto, inclusive por algumas tentativas que não saíram do papel; já pelas dificuldades da camada física, sofremos principalmente com os ruídos do meio acústico, a configuração de dispositivos de áudio e a calibragem destes conforme o decorrer do projeto. Esse processo está todo documentado no README e no vídeo realizado.
+
 Portanto, com o sistema implementado, compreendemos que realizar a conversão de bits pelo meio é uma tarefa desafiadora, visto que estamos transformando informações binárias de forma analógica e vice-versa.
 
 ## Instalação, contribuição e licença
